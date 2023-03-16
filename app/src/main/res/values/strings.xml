@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">GuidomiaChallenge</string>
     <string name="title_toolbar">GUIDOMIA</string>
+    <string name="content_description_header">Header imageview</string>
+    <string name="header_title">Tacoma 2021</string>
+    <string name="header_description">Get your\'s now</string>
 </resources>
