@@ -2,9 +2,12 @@ package com.kader.guidomia_challenge.presentation.ui.home.cars_list
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kader.guidomia_challenge.R
@@ -45,6 +48,25 @@ class CarListAdapter : RecyclerView.Adapter<CarListAdapter.ViewHolder>() {
                 image?.let {
                     binding.itemImageView.setImageDrawable(ContextCompat.getDrawable(context, it))
                 }
+
+                binding.subItemContainer.visibility = if (expanded) View.VISIBLE else View.GONE
+                binding.carItemContainer.setOnClickListener {
+                    shouldExpandSection(position)
+                }
+
+                binding.subItemProsContainer.apply {
+                    this.removeAllViews()
+                    for (pros in prosList) {
+                        this.addView(createBulletPoints(pros, context))
+                    }
+                }
+
+                binding.subItemConsContainer.apply {
+                    this.removeAllViews()
+                    for (cons in consList) {
+                        this.addView(createBulletPoints(cons, context))
+                    }
+                }
             }
         }
     }
@@ -81,5 +103,36 @@ class CarListAdapter : RecyclerView.Adapter<CarListAdapter.ViewHolder>() {
             drawables.add(imageView)
         }
         return drawables
+    }
+
+    private fun createBulletPoints(content: String, context: Context): TextView {
+        val textView = TextView(context)
+        textView.apply {
+            text = content
+            textSize = 12f
+            gravity = Gravity.CENTER_HORIZONTAL
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            setCompoundDrawablesWithIntrinsicBounds(
+                R.drawable.ic_bullet,
+                0,
+                0,
+                0
+            )
+            setTextColor(resources.getColor(R.color.black, null))
+        }
+        return textView
+    }
+
+    private fun shouldExpandSection(position: Int) {
+        data[position].expanded = !data[position].expanded
+        data.map {
+            if (data.indexOf(it) != position) {
+                it.expanded = false
+            }
+        }
+        notifyDataSetChanged()
     }
 }
