@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'kotlin-android'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -42,6 +43,7 @@ dependencies {
     def nav_version = "2.5.0"
     def coroutineVersion = "1.6.4"
     def moshiVersion = "1.13.0"
+    def hiltVersion = "2.45"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -60,6 +62,10 @@ dependencies {
     implementation "com.squareup.moshi:moshi:$moshiVersion"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
     implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
+
+    //Hilt
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    kapt "com.google.dagger:hilt-compiler:$hiltVersion"
 
 
     testImplementation 'junit:junit:4.13.2'
