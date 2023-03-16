@@ -5,10 +5,11 @@ import com.kader.guidomia_challenge.common.Resource
 import com.kader.guidomia_challenge.doamin.model.Car
 import com.kader.guidomia_challenge.doamin.repository.CarRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 private const val TAG = "GetAllCarsUseCase"
 
-class GetAllCarsUseCase(
+class GetAllCarsUseCase @Inject constructor(
     private val carRepository: CarRepository
 ) {
     operator fun invoke(): Flow<Resource<List<Car>>> {
