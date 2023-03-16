@@ -11,11 +11,12 @@ import com.squareup.moshi.JsonAdapter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
+import javax.inject.Inject
 
 
 private const val TAG = "CarRepositoryImpl"
 
-class CarRepositoryImpl constructor(
+class CarRepositoryImpl @Inject constructor(
     private val mAdapter: JsonAdapter<List<CarDto>>,
     private val resources: Resources,
 ) : CarRepository {
@@ -23,7 +24,10 @@ class CarRepositoryImpl constructor(
     override fun getAllCars(): Flow<Resource<List<Car>>> = flow {
         emit(Resource.Loading())
         try {
-            val allCars = getCarsFromLocalJson().map { it.toCar() }
+            val allCars = getCarsFromLocalJson().map { it.toCar() }.map {
+                it.setImage()
+                it
+            }
             emit(Resource.Success(allCars))
             Log.d(TAG, "getAllCars: Retrieved ${allCars.size} cars from Room database")
         } catch (e: IOException) {
