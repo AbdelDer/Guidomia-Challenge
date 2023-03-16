@@ -24,7 +24,14 @@ class CarRepositoryImpl @Inject constructor(
     override fun getAllCars(): Flow<Resource<List<Car>>> = flow {
         emit(Resource.Loading())
         try {
-            val allCars = getCarsFromLocalJson().map { it.toCar() }.map {
+            val allCars = getCarsFromLocalJson().map {
+                it.copy(
+                    prosList = it.prosList?.filter { it.isNotEmpty() },
+                    consList = it.consList?.filter { it.isNotEmpty() }
+                )
+            }.map {
+                it.toCar()
+            }.map {
                 it.setImage()
                 it
             }
