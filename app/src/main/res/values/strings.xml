@@ -5,4 +5,6 @@
     <string name="header_title">Tacoma 2021</string>
     <string name="header_description">Get your\'s now</string>
     <string name="unknown_error_message">Unknown error!</string>
+    <string name="title_cons">Cons :</string>
+    <string name="title_pros">Pros :</string>
 </resources>
