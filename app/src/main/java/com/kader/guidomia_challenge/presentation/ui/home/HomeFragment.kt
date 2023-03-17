@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.viewModels
@@ -12,11 +13,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kader.guidomia_challenge.R
+import com.kader.guidomia_challenge.databinding.CardFilterBinding
 import com.kader.guidomia_challenge.databinding.FragmentHomeBinding
 import com.kader.guidomia_challenge.databinding.HeaderBinding
 import com.kader.guidomia_challenge.presentation.ui.home.cars_list.CarListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -31,12 +34,16 @@ class HomeFragment : Fragment() {
     private val includeHeaderBinding: HeaderBinding get() = _includeHeaderBinding!!
     private var _includeHeaderBinding: HeaderBinding? = null
 
+    private val includeCardFilterBinding: CardFilterBinding get() = _includeCardFilterBinding!!
+    private var _includeCardFilterBinding: CardFilterBinding? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         _includeHeaderBinding = HeaderBinding.bind(binding.root)
+        _includeCardFilterBinding = CardFilterBinding.bind(binding.root)
         return binding.root
     }
 
@@ -45,6 +52,7 @@ class HomeFragment : Fragment() {
         initView()
         collectList()
         collectEvent()
+        populateSpinners()
     }
 
     private fun initView() {
@@ -97,5 +105,35 @@ class HomeFragment : Fragment() {
             binding.progressBar.visibility = View.GONE
             binding.recyclerView.visibility = View.VISIBLE
         }
+    }
+
+    private fun populateSpinners() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            launch {
+                viewModel.modelFilterValues.collect { populateModelSpinnerWithEntries(it) }
+            }
+            launch {
+                viewModel.makeFilterValues.collect { populateMakeSpinnerWithEntries(it) }
+            }
+        }
+    }
+
+
+    private fun populateMakeSpinnerWithEntries(entries: List<String>) {
+        val adapter = ArrayAdapter(
+            requireContext(),
+            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
+            entries
+        )
+        includeCardFilterBinding.cardFilterMakeSpinner.adapter = adapter
+    }
+
+    private fun populateModelSpinnerWithEntries(entries: List<String>) {
+        val adapter = ArrayAdapter(
+            requireContext(),
+            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
+            entries
+        )
+        includeCardFilterBinding.cardFilterModelSpinner.adapter = adapter
     }
 }
