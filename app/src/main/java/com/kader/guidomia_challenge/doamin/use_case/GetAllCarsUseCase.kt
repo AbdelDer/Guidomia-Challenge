@@ -12,10 +12,15 @@ private const val TAG = "GetAllCarsUseCase"
 class GetAllCarsUseCase @Inject constructor(
     private val carRepository: CarRepository
 ) {
-    operator fun invoke(): Flow<Resource<List<Car>>> {
+    operator fun invoke(model: String?, make: String?): Flow<Resource<List<Car>>> {
         Log.d(TAG, "invoke: method called")
-        Log.d(TAG, "invoke: calling getAllCars")
-        return carRepository.getAllCars()
-
+        return if (model.isNullOrEmpty() && make.isNullOrEmpty()) {
+            Log.d(TAG, "invoke: calling getAllCars")
+            print(carRepository)
+            carRepository.getAllCars()
+        } else {
+            Log.d(TAG, "invoke: calling getCarsBayParameters")
+            carRepository.getCarsByParameters(model.orEmpty(), make.orEmpty())
+        }
     }
 }
