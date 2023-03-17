@@ -11,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
@@ -23,7 +24,7 @@ class GetAllCarsUseCaseTest {
     lateinit var carRepository: CarRepository
 
     @Test
-    fun `invoke with empty parameters calls getAllCars`(): Unit = runBlocking{
+    fun `invoke with empty parameters calls getAllCars`(): Unit = runBlocking {
         // Given
         val getAllCarsUseCase = GetAllCarsUseCase(carRepository)
         val expectedCars = listOf(
@@ -61,10 +62,46 @@ class GetAllCarsUseCaseTest {
         `when`(carRepository.getAllCars()).thenReturn(flowOf(Resource.Success(expectedCars)))
 
         // When
-        val result = getAllCarsUseCase()
+        val result = getAllCarsUseCase("", "")
 
         // Then
         assertEquals(expectedCars, result.first().data)
         verify(carRepository).getAllCars()
+    }
+
+    @Test
+    fun `invoke with non-empty parameters calls getCarsByParameters`(): Unit = runBlocking {
+        // Given
+        val getCarsByParametersUseCase = GetAllCarsUseCase(carRepository)
+        val expectedCars = listOf(
+            Car(
+                consList = listOf(
+                    "Bad direction"
+                ),
+                make = "Roadster",
+                marketPrice = 125000.0,
+                model = "Alpine",
+                prosList = listOf(
+                    "You can go everywhere",
+                    "Good sound system"
+                ),
+                rating = 3,
+                expanded = false,
+                image = null
+            ),
+        )
+        `when`(
+            carRepository.getCarsByParameters(
+                ArgumentMatchers.anyString(),
+                ArgumentMatchers.anyString()
+            )
+        ).thenReturn(flowOf(Resource.Success(expectedCars)))
+
+        // When
+        val result = getCarsByParametersUseCase("Roadster", "Alpine")
+
+        // Then
+        assertEquals(expectedCars, result.first().data)
+        verify(carRepository).getCarsByParameters("Roadster", "Alpine")
     }
 }
