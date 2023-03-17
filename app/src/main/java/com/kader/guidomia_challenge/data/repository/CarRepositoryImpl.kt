@@ -1,6 +1,7 @@
 package com.kader.guidomia_challenge.data.repository
 
 import android.content.res.Resources
+import android.database.sqlite.SQLiteException
 import android.util.Log
 import com.kader.guidomia_challenge.R
 import com.kader.guidomia_challenge.common.Resource
@@ -43,6 +44,38 @@ class CarRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error("Unknown error occurred"))
             Log.e(TAG, "getAllCars: Unknown error occurred: ${e.message}")
+        }
+    }
+
+    override fun getAllMakeExisting(): Flow<Resource<List<String>>> = flow {
+        Log.d(TAG, "getAllMakeExisting: Method called")
+        emit(Resource.Loading())
+        try {
+            val makeList = getCarsFromLocalJson().map { it.make }.distinct().toMutableList()
+            Log.d(TAG, "getAllMakeExisting: Retrieved list of all makes: $makeList")
+            emit(Resource.Success(makeList))
+        } catch (e: SQLiteException) {
+            Log.e(TAG, "getAllMakeExisting: Error accessing Room database", e)
+            emit(Resource.Error("Error accessing Room database"))
+        } catch (e: Exception) {
+            Log.e(TAG, "getAllMakeExisting: Unknown error occurred", e)
+            emit(Resource.Error("Unknown error occurred"))
+        }
+    }
+
+    override fun getAllModelsExisting(): Flow<Resource<List<String>>> = flow {
+        Log.d(TAG, "getAllModelsExisting: Function called")
+        emit(Resource.Loading())
+        try {
+            val modelList = getCarsFromLocalJson().map { it.model }.distinct().toMutableList()
+            emit(Resource.Success(modelList))
+            Log.d(TAG, "getAllModelsExisting: Retrieved list of all makes: $modelList")
+        } catch (e: SQLiteException) {
+            Log.e(TAG, "getAllModelsExisting: Error accessing Room database", e)
+            emit(Resource.Error("Error accessing Room database"))
+        } catch (e: Exception) {
+            Log.e(TAG, "getAllModelsExisting: Unknown error occurred", e)
+            emit(Resource.Error("Unknown error occurred"))
         }
     }
 

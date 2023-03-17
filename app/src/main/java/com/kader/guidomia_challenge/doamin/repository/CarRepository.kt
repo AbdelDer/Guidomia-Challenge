@@ -8,4 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface CarRepository {
     fun getAllCars(): Flow<Resource<List<Car>>>
+    fun getAllMakeExisting(): Flow<Resource<List<String>>>
+    fun getAllModelsExisting(): Flow<Resource<List<String>>>
 }
