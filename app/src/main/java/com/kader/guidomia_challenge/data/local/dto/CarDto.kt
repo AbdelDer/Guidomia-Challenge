@@ -1,5 +1,6 @@
 package com.kader.guidomia_challenge.data.local.dto
 
+import com.kader.guidomia_challenge.data.local.entity.CarEntity
 import com.kader.guidomia_challenge.doamin.model.Car
 
 
@@ -12,8 +13,8 @@ data class CarDto(
     val prosList: List<String>?,
     val rating: Int
 ) {
-    fun toCar(): Car {
-        return Car(
+    fun toCarEntity(): CarEntity {
+        return CarEntity(
             rating = rating,
             model = model,
             make = make,
