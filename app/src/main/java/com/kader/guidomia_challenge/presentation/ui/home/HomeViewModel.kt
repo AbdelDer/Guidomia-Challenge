@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.kader.guidomia_challenge.R
 import com.kader.guidomia_challenge.common.Resource
 import com.kader.guidomia_challenge.doamin.model.Car
+import com.kader.guidomia_challenge.doamin.model.FilterValue
 import com.kader.guidomia_challenge.doamin.use_case.GetAllCarsUseCase
 import com.kader.guidomia_challenge.doamin.use_case.GetAllMakeExistingUseCase
 import com.kader.guidomia_challenge.doamin.use_case.GetAllModelExistingUseCase
@@ -34,12 +35,15 @@ class HomeViewModel @Inject constructor(
     private val _modelFilterValues = MutableStateFlow<List<String>>(emptyList())
     val modelFilterValues = _modelFilterValues.asStateFlow()
 
+    private val filterValue = MutableStateFlow(FilterValue())
+
     init {
         getCars()
     }
 
     private fun getCars() {
         getAllCarsUseCase(
+            make = filterValue.value.makeValue, model = filterValue.value.modelValue
         ).onEach { result ->
             when (result) {
                 is Resource.Success -> {
@@ -118,6 +122,11 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun updateFilterValue(filter: FilterValue) {
+        filterValue.value = filter
+        getCars()
     }
 
     sealed class UIEvent {
