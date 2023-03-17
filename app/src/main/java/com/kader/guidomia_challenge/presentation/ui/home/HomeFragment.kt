@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
@@ -16,6 +17,7 @@ import com.kader.guidomia_challenge.R
 import com.kader.guidomia_challenge.databinding.CardFilterBinding
 import com.kader.guidomia_challenge.databinding.FragmentHomeBinding
 import com.kader.guidomia_challenge.databinding.HeaderBinding
+import com.kader.guidomia_challenge.doamin.model.FilterValue
 import com.kader.guidomia_challenge.presentation.ui.home.cars_list.CarListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -37,6 +39,8 @@ class HomeFragment : Fragment() {
     private val includeCardFilterBinding: CardFilterBinding get() = _includeCardFilterBinding!!
     private var _includeCardFilterBinding: CardFilterBinding? = null
 
+    private var filterValue = FilterValue()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,6 +57,8 @@ class HomeFragment : Fragment() {
         collectList()
         collectEvent()
         populateSpinners()
+        setMakeListener()
+        setModelListeners()
     }
 
     private fun initView() {
@@ -135,5 +141,45 @@ class HomeFragment : Fragment() {
             entries
         )
         includeCardFilterBinding.cardFilterModelSpinner.adapter = adapter
+    }
+
+    private fun setMakeListener() {
+        includeCardFilterBinding.cardFilterMakeSpinner.setSelection(0)
+        includeCardFilterBinding.cardFilterMakeSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    if (includeCardFilterBinding.cardFilterMakeSpinner.selectedItem.toString() != "Any Make")
+                        filterValue.makeValue =
+                            includeCardFilterBinding.cardFilterMakeSpinner.selectedItem.toString()
+                    else
+                        filterValue.makeValue = ""
+
+                    viewModel.updateFilterValue(filterValue)
+                    collectList()
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                }
+            }
+    }
+
+    private fun setModelListeners() {
+        includeCardFilterBinding.cardFilterModelSpinner.setSelection(0)
+        includeCardFilterBinding.cardFilterModelSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    if (includeCardFilterBinding.cardFilterModelSpinner.selectedItem.toString() != "Any Model")
+                        filterValue.modelValue =
+                            includeCardFilterBinding.cardFilterModelSpinner.selectedItem.toString()
+                    else
+                        filterValue.modelValue = ""
+                    viewModel.updateFilterValue(filterValue)
+                    collectList()
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                }
+
+            }
     }
 }
