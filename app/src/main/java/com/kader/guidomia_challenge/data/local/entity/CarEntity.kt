@@ -13,7 +13,6 @@ data class CarEntity(
     val id: Int? = null,
     val make: String,
     val model: String,
-    val customerPrice: Double,
     val marketPrice: Double,
     val rating: Int,
     val prosList: List<String>,
