@@ -7,4 +7,5 @@
     <string name="unknown_error_message">Unknown error!</string>
     <string name="title_cons">Cons :</string>
     <string name="title_pros">Pros :</string>
+    <string name="card_filter_title">Filters</string>
 </resources>
