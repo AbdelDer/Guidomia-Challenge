@@ -10,4 +10,5 @@ interface CarRepository {
     fun getAllCars(): Flow<Resource<List<Car>>>
     fun getAllMakeExisting(): Flow<Resource<List<String>>>
     fun getAllModelsExisting(): Flow<Resource<List<String>>>
+    fun getCarsByParameters(model: String, make: String): Flow<Resource<List<Car>>>
 }

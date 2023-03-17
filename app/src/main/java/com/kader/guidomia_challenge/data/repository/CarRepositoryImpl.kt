@@ -86,4 +86,26 @@ class CarRepositoryImpl @Inject constructor(
         val data = mAdapter.fromJson(jsonFile) ?: emptyList()
         return data
     }
+
+    override fun getCarsByParameters(model: String, make: String): Flow<Resource<List<Car>>> =
+        flow {
+            emit(Resource.Loading())
+            try {
+                val listOfCars = getCarsFromLocalJson().filter {
+                    it.model == model || it.make ==
+                            make
+                }.map { it.toCar() }
+                emit(Resource.Success(listOfCars))
+                Log.d(
+                    TAG,
+                    "getCarsByParameters: Retrieved ${listOfCars.size} cars from Room database"
+                )
+            } catch (e: SQLiteException) {
+                Log.e(TAG, "getCarsByParameters: Error accessing Room database: ${e.message}", e)
+                emit(Resource.Error("Error accessing Room database"))
+            } catch (e: Exception) {
+                Log.e(TAG, "getCarsByParameters: Unknown error occurred: ${e.message}", e)
+                emit(Resource.Error("Unknown error occurred"))
+            }
+        }
 }
